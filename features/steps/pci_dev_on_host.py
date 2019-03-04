@@ -117,3 +117,11 @@ def then_driver_is(context, driver):
     if m is None:
         raise AssertionError("STEP: no 'driver is %s' found" % context.iface)
     assert m.group(1) == str(driver), m.group(1)
+
+@given('has bridge {iface}')
+def given_bridge(context, iface):
+    context.iface = iface
+    sys_fn = '/sys/class/net/%s/bridge' % iface
+    assert os.path.exists(sys_fn)
+    cmd = ['/sbin/ip', 'a', 'l', iface]
+    context.ip_iface = subprocess.check_output(cmd)
